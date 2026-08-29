@@ -1,4 +1,11 @@
 import { Outlet } from "react-router";
+import type { Route } from "../home/+types";
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "HomeNest" },
+    { name: "description", content: "Custom Website Development" },
+  ];
+}
 const MainLayout = () => {
   return (
     <>

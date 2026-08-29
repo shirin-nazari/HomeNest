@@ -8,6 +8,8 @@ export type Properties = {
   bedrooms: number;
   bathrooms: number;
   area: number;
+  lat: number;
+  lng: number;
   type: string;
   status: string;
   yearBuilt: number;

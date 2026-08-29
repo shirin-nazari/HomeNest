@@ -7,7 +7,9 @@ export async function clientLoader({
   request,
   params,
 }: Route.ClientLoaderArgs): Promise<Properties> {
-  const res = await fetch(`http://localhost:8000/properties/${params.id}`);
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/properties/${params.id}`,
+  );
   if (!res.ok) throw new Response("Project Not found", { status: 404 });
   const data: Properties = await res.json();
   return data;
