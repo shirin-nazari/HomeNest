@@ -6,7 +6,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-
+import "leaflet/dist/leaflet.css";
 import type { Route } from "./+types/root";
 import "./app.css";
 import Navbar from "./components/NavBar";

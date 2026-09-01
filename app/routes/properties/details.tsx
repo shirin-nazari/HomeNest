@@ -2,6 +2,9 @@ import type { Route } from "./+types/details";
 import type { Properties } from "~/types";
 import { FaArrowLeft } from "react-icons/fa";
 import { Link } from "react-router";
+import { lazy, Suspense } from "react";
+import ClientOnly from "~/components/ClientOnly";
+const PropertyMap = lazy(() => import("~/components/PropertyMap"));
 
 export async function clientLoader({
   request,
@@ -30,7 +33,7 @@ const ProjectDetailsPage = ({ loaderData }: Route.ComponentProps) => {
       >
         <FaArrowLeft className="mr-2" /> Back to Projects
       </Link>
-      <div className="grid gap-8 md:grid-cols-2 items-start">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 items-start">
         <div>
           <img
             src={project.image}
@@ -61,7 +64,7 @@ const ProjectDetailsPage = ({ loaderData }: Route.ComponentProps) => {
               {Number(project.price).toLocaleString()}
             </span>
           </p>
-          <div className="bg-gray-300/20 ba backdrop-blur-sm rounded-lg w-md px-6 py-4 flex items-center gap-5">
+          <div className="bg-gray-300/20 ba backdrop-blur-sm rounded-lg w-fit md:w-md px-6 py-4 flex items-center gap-5">
             <img
               src="/pic.png"
               alt="user"
@@ -78,6 +81,28 @@ const ProjectDetailsPage = ({ loaderData }: Route.ComponentProps) => {
           </div>
         </div>
       </div>
+      {project.lat && project.lng && (
+        <ClientOnly
+          fallback={
+            <div className="w-full h-80 rounded-lg bg-gray-800 animate-pulse" />
+          }
+        >
+          {() => (
+            <Suspense
+              fallback={
+                <div className="w-full h-80 rounded-lg bg-gray-800 animate-pulse" />
+              }
+            >
+              <PropertyMap
+                address={project.address}
+                lat={project.lat}
+                lng={project.lng}
+                title={project.title}
+              />
+            </Suspense>
+          )}
+        </ClientOnly>
+      )}
     </>
   );
 };
