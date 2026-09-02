@@ -17,3 +17,10 @@ export type Properties = {
   furnished: boolean;
   image: string;
 };
+export type PostMeta = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+};

@@ -1,0 +1,44 @@
+[
+  {
+    "id": "1",
+    "slug": "how-to-find-your-dream-home",
+    "title": "How to Find Your Dream Home",
+    "excerpt": "Discover the most important things to consider when searching for a home that fits your lifestyle and budget.",
+    "date": "2025-03-01T00:00:00"
+  },
+  {
+    "id": "2",
+    "slug": "first-time-home-buying-guide",
+    "title": "A Guide to Buying Your First Home",
+    "excerpt": "Learn the essential steps you should take before buying your first property.",
+    "date": "2025-02-25T00:00:00"
+  },
+  {
+    "id": "3",
+    "slug": "tips-for-renting-a-home",
+    "title": "10 Tips for Renting the Right Home",
+    "excerpt": "Useful tips to help you find a comfortable rental property and avoid common mistakes.",
+    "date": "2025-02-18T00:00:00"
+  },
+  {
+    "id": "4",
+    "slug": "how-to-increase-home-value",
+    "title": "How to Increase Your Home's Value",
+    "excerpt": "Simple improvements that can make your property more attractive and valuable.",
+    "date": "2025-02-10T00:00:00"
+  },
+  {
+    "id": "5",
+    "slug": "apartment-vs-house",
+    "title": "Apartment vs. House: Which Is Right for You?",
+    "excerpt": "Compare the benefits and drawbacks of living in an apartment or a house before making your decision.",
+    "date": "2025-01-28T00:00:00"
+  },
+  {
+    "id": "6",
+    "slug": "best-neighborhood-for-families",
+    "title": "How to Choose the Best Neighborhood for Your Family",
+    "excerpt": "Learn what to look for when choosing a neighborhood, from schools and transportation to safety and amenities.",
+    "date": "2025-01-20T00:00:00"
+  }
+]

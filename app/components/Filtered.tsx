@@ -39,6 +39,7 @@ const Filtered = ({ properties, onFilter }: FilteredHomeProps) => {
       const matchType = selectType ? p.type === selectType : true;
       return matchArea && matchStatus && matchType;
     });
+    console.log("selectArea:", selectArea, "result:", result);
     onFilter?.(result);
   };
   return (
