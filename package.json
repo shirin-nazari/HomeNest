@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@react-router/dev": "^8",
+    "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.2.2",
     "@types/leaflet": "^1.9.22",
     "@types/node": "^22",
