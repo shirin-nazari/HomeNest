@@ -1,15 +1,37 @@
 import ProjectCard from "~/components/ProjectCard";
 import type { Route } from "./+types/index";
-import type { Properties } from "~/types";
+import type { Properties, StrapiProject, StrapiResponse } from "~/types";
 import { useState } from "react";
 import Pagination from "~/components/Pagination";
 import { AnimatePresence, motion } from "framer-motion";
 export async function loader({
   request,
 }: Route.LoaderArgs): Promise<{ properties: Properties[] }> {
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/properties`);
-  const data = await res.json();
-  return { properties: data };
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/projects?populate=*`,
+  );
+  const json: StrapiResponse<StrapiProject> = await res.json();
+  const projects = json.data.map((item) => ({
+    id: item.id,
+    documentId: item.documentId,
+    title: item.title,
+    description: item.description,
+    image: item.image?.url ? `${item.image.url}` : "/images/no-image.png",
+    location: item.location,
+    address: item.address,
+    lat: item.lat,
+    lng: item.lng,
+    price: item.price,
+    status: item.statusHome,
+    type: item.type,
+    area: item.area,
+    furnished: item.furnished,
+    bedrooms: item.bedrooms,
+    bathrooms: item.bathrooms,
+    parking: item.parking,
+    yearBuilt: item.yearBuilt,
+  }));
+  return { properties: projects };
 }
 
 const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {

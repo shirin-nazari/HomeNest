@@ -1,29 +1,44 @@
 import type { Route } from "./+types/details";
-import type { Properties } from "~/types";
+import type { Properties, StrapiProject, StrapiResponse } from "~/types";
 import { FaArrowLeft } from "react-icons/fa";
 import { Link } from "react-router";
 import { lazy, Suspense } from "react";
 import ClientOnly from "~/components/ClientOnly";
 const PropertyMap = lazy(() => import("~/components/PropertyMap"));
 
-export async function clientLoader({
-  request,
-  params,
-}: Route.ClientLoaderArgs): Promise<Properties> {
+export async function loader({ request, params }: Route.LoaderArgs) {
+  const { id } = params;
   const res = await fetch(
-    `${import.meta.env.VITE_API_URL}/properties/${params.id}`,
+    `${import.meta.env.VITE_API_URL}/projects?filters[documentId][$eq]=${id}&populate=*`,
   );
   if (!res.ok) throw new Response("Project Not found", { status: 404 });
-  const data: Properties = await res.json();
-  return data;
-}
-
-export function HydrateFallBack() {
-  return <div>Loading...</div>;
+  const json: StrapiResponse<StrapiProject> = await res.json();
+  const item = json.data[0];
+  const project: Properties = {
+    id: item.id,
+    documentId: item.documentId,
+    title: item.title,
+    description: item.description,
+    image: item.image?.url ? `${item.image.url}` : "/images/no-image.png",
+    location: item.location,
+    address: item.address,
+    lat: item.lat,
+    lng: item.lng,
+    price: item.price,
+    status: item.statusHome,
+    type: item.type,
+    area: item.area,
+    furnished: item.furnished,
+    bedrooms: item.bedrooms,
+    bathrooms: item.bathrooms,
+    parking: item.parking,
+    yearBuilt: item.yearBuilt,
+  };
+  return { project };
 }
 
 const ProjectDetailsPage = ({ loaderData }: Route.ComponentProps) => {
-  const project = loaderData;
+  const { project } = loaderData;
 
   return (
     <>
@@ -74,9 +89,11 @@ const ProjectDetailsPage = ({ loaderData }: Route.ComponentProps) => {
               <p className="text-lg text-gray-100 font-bold px-1">
                 Shirin nazari
               </p>
-              <button className="py-2 px-4 bg-gray-500 text-white rounded-lg">
-                Send Message
-              </button>
+              <Link to="/contact">
+                <button className="py-2 px-4 bg-gray-500 text-white rounded-lg">
+                  Send Message
+                </button>
+              </Link>
             </div>
           </div>
         </div>

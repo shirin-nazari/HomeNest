@@ -1,5 +1,6 @@
+import { useEffect, useRef, useState } from "react";
 import type { Route } from "./+types";
-import { Form } from "react-router";
+import { Form, useNavigation } from "react-router";
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
   const name = formData.get("name") as string;
@@ -18,23 +19,76 @@ export async function action({ request }: Route.ActionArgs) {
   if (Object.keys(errors).length > 0) {
     return { errors };
   }
-  const data = { name, email, subject, message };
-  return { message: "form submitted successfully", data };
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/messages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data: {
+          FullName: name,
+          Email: email,
+          Subject: subject,
+          Message: message,
+        },
+      }),
+    });
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.log("strapi Error: ", errorData);
+      return {
+        errors: {
+          form: "ارسال پیام با خطا مواجه شد. لطفاً دوباره تلاش کنید.",
+        },
+      };
+    }
+    return { message: "پیام شما با موفقیت ارسال شد." };
+  } catch (err) {
+    console.error("Network error:", err);
+    return {
+      errors: {
+        form: "خطا در برقراری ارتباط با سرور. اتصال اینترنت خود را بررسی کنید.",
+      },
+    };
+  }
 }
 
 const ContactPage = ({ actionData }: Route.ComponentProps) => {
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
   const errors = actionData?.errors || {};
+  const formRef = useRef<HTMLFormElement>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  useEffect(() => {
+    if (actionData?.message) {
+      formRef.current?.reset();
+      setShowSuccess(true);
+      const timer = setTimeout(() => {
+        setShowSuccess(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [actionData]);
+
   return (
     <div className="max-w-3xl mx-auto mt-12 px-4 py-8 bg-gray-900">
       <h2 className="text-3xl font-bold text-white mb-8 text-center">
         Contact Me
       </h2>
-      {actionData?.message ? (
+      {showSuccess && actionData?.message ? (
         <p className="mb-6 p-4 bg-green-700 text-green-100 text-center rounded-lg border border-green-500 shadow-md">
           {actionData.message}
         </p>
       ) : null}
-      <Form method="post" className="space-y-6">
+      {errors.form ? (
+        <p className="mb-6 p-4 bg-red-700 text-red-100 text-center rounded-lg border border-red-500 shadow-md">
+          {errors.form}
+        </p>
+      ) : null}
+      <Form ref={formRef} method="post" className="space-y-6">
         <div>
           <label
             htmlFor="name"
@@ -102,8 +156,12 @@ const ContactPage = ({ actionData }: Route.ComponentProps) => {
             <p className="text-red-400 text-sm mt-1">{errors.message}</p>
           )}
         </div>
-        <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 cursor-pointer">
-          Send Message
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSubmitting ? "در حال ارسال..." : "Send Message"}
         </button>
       </Form>
     </div>

@@ -1,21 +1,28 @@
 import { useState } from "react";
 import type { Route } from "./+types/index";
 import PostCard from "~/components/PostCard";
-import type { PostMeta } from "~/types";
+import type { PostMeta, StrapiResponse, StrapiPost } from "~/types";
 import Pagination from "~/components/Pagination";
 import PostFilter from "~/components/PostFilter";
 
 export async function loader({
   request,
 }: Route.LoaderArgs): Promise<{ posts: PostMeta[] }> {
-  const url = new URL("/posts-meta.json", request.url);
-  const res = await fetch(url.href);
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/posts?sort=date:desc`,
+  );
   if (!res.ok) throw new Error("Failed to Fetch Data");
 
-  const data = await res.json();
-  data.sort((a: PostMeta, b: PostMeta) => {
-    return new Date(b.date).getTime() - new Date(a.date).getTime();
-  });
+  const json: StrapiResponse<StrapiPost> = await res.json();
+
+  const data = json.data.map((item) => ({
+    id: item.id,
+    title: item.title,
+    slug: item.slug,
+    excerpt: item.excerpt,
+    date: item.date,
+    body: item.body,
+  }));
   return { posts: data };
 }
 
